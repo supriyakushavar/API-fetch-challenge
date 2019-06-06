@@ -1,0 +1,9 @@
+body{
+    padding: 30px;
+}
+
+.card-img-top{
+    width: 100%;
+    object-fit: scale-down;
+    height: 40vh;
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css" />
+    <title>API Fetch</title>
+</head>
+<body>
+    <div class="container" >
+            <div class="row" id="root">
+            </div>
+    </div>
+    <script>
+        function getBeer(){
+
+            return fetch('https://api.punkapi.com/v2/beers')
+            .then(response => response.json());
+
+        }
+        async function getResponse(){
+            var container = document.getElementById("root");
+            let beerArray = await getBeer();
+            beerArray.forEach(element => {
+                let newCard = document.createElement('div');
+                newCard.setAttribute("class" , "col-sm-4");
+                newCard.innerHTML = `
+                    <div class="card">
+                    <img class="card-img-top"   src="${element.image_url}" alt="Beer">
+                    <div class="card-body">
+                    <h5 class="card-title">${element.name}</h5>
+                    <p class="card-text">${element.description}</p>
+                    </div>
+                    <div class="card-footer">
+                    <small>${element.abv}</small>
+                    </div>
+                    </div>
+                `;
+                container.appendChild(newCard);
+            });
+
+        }
+
+
+        getResponse();
+    </script>
+</body>
+</html>
