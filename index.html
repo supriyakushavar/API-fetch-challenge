@@ -37,7 +37,7 @@
         let nextPage = 1;
         let nextPageCount = 4;
         function getBeer(pageNumber){
-            return fetch(`https://api.punkapi.com/v2/beers?page=${pageNumber}&per_page=10`)
+            return fetch(`https://api.punkapi.com/v2/beers?page=${pageNumber}&per_page=40`)
             .then(response => response.json());
         }
         var container = document.getElementById("root");
@@ -53,9 +53,7 @@
                     <h5 class="card-title">${element.name}</h5>
                     <p class="card-text">${element.description}</p>
                     </div>
-                    <div class="card-footer">
-                    <small>${element.abv}</small>
-                    </div>
+                    <div class="card-footer">${element.id} </div>
                     </div>
                 `;
                 container.appendChild(newCard);
@@ -66,8 +64,11 @@
         let pageLink = document.getElementsByClassName('page-link');
             for(var i = 0 ; i < pageLink.length; i++){
                 if(i == 0){
-                    pageLink[i].addEventListener("click" , function(e){
-                        for(var j = 1 ; j < pageLink.length-1 ; j++ ){
+                    pageLink[0].addEventListener("click" , function(e){
+                        nextPage = nextPageCount;
+                        container.innerHTML = "";
+                        getResponse();
+                        for(var j = 4 ; j < pageLink.length-1 ; j-- ){
                             pageLink[j].textContent = nextPageCount;
                             nextPageCount--;
                         }
@@ -77,10 +78,12 @@
                         for(var j = 1 ; j < pageLink.length-1 ; j++ ){
                             pageLink[j].textContent = nextPageCount;
                             nextPageCount++;
+                            // if(nextPageCount == 9){
+                            //     pageLink[j+2].style.display = "none";
+                            // }
                         }
                     });
                 }else{
-                    console.log("fsdf");
                     pageLink[i].addEventListener("click" , function(e){
                         nextPage = parseInt(e.target.textContent);
                         container.innerHTML = "";
