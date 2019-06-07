@@ -12,17 +12,37 @@
     <div class="container" >
             <div class="row" id="root">
             </div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#" >1</a></li>
+                    <li class="page-item"><a class="page-link" href="#" >2</a></li>
+                    <li class="page-item"><a class="page-link" href="#" >3</a></li>
+                    <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                    </li>
+                </ul>
+            </nav>
     </div>
     <script>
-        function getBeer(){
-
-            return fetch('https://api.punkapi.com/v2/beers')
+        let url = 'https://api.punkapi.com/v2/beers';
+        let nextPage = 1;
+        let nextPageCount = 4;
+        function getBeer(pageNumber){
+            return fetch(`https://api.punkapi.com/v2/beers?page=${pageNumber}&per_page=10`)
             .then(response => response.json());
-
         }
+        var container = document.getElementById("root");
         async function getResponse(){
-            var container = document.getElementById("root");
-            let beerArray = await getBeer();
+            let beerArray = await getBeer(nextPage);
             beerArray.forEach(element => {
                 let newCard = document.createElement('div');
                 newCard.setAttribute("class" , "col-sm-4");
@@ -40,11 +60,37 @@
                 `;
                 container.appendChild(newCard);
             });
-
+            
         }
 
-
+        let pageLink = document.getElementsByClassName('page-link');
+            for(var i = 0 ; i < pageLink.length; i++){
+                if(i == 0){
+                    pageLink[i].addEventListener("click" , function(e){
+                        for(var j = 1 ; j < pageLink.length-1 ; j++ ){
+                            pageLink[j].textContent = nextPageCount;
+                            nextPageCount--;
+                        }
+                    });
+                }else if (i == pageLink.length-1){
+                    pageLink[i].addEventListener("click" , function(e){
+                        for(var j = 1 ; j < pageLink.length-1 ; j++ ){
+                            pageLink[j].textContent = nextPageCount;
+                            nextPageCount++;
+                        }
+                    });
+                }else{
+                    console.log("fsdf");
+                    pageLink[i].addEventListener("click" , function(e){
+                        nextPage = parseInt(e.target.textContent);
+                        container.innerHTML = "";
+                        getResponse();
+                    });
+                }
+                
+        }
         getResponse();
+        
     </script>
 </body>
 </html>
