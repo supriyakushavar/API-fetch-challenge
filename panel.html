@@ -34,14 +34,15 @@
     </div>
     <script>
         let url = 'https://api.punkapi.com/v2/beers';
-        let pageNumber = 1;
+        let nextPage = 1;
+        let nextPageCount = 4;
         function getBeer(pageNumber){
             return fetch(`https://api.punkapi.com/v2/beers?page=${pageNumber}&per_page=40`)
             .then(response => response.json());
         }
         var container = document.getElementById("root");
         async function getResponse(){
-            let beerArray = await getBeer(pageNumber);
+            let beerArray = await getBeer(nextPage);
             beerArray.forEach(element => {
                 let newCard = document.createElement('div');
                 newCard.setAttribute("class" , "col-sm-4");
@@ -57,20 +58,39 @@
                 `;
                 container.appendChild(newCard);
             });
-            let pageLink = document.getElementsByClassName('page-link');
-            for(var i = 0 ; i < pageLink.length-1 ; i++){
-                pageLink[i].addEventListener("click" , function(e){
-                    pageNumber = parseInt(e.target.textContent);
-                    container.innerHTML = "";
-                    getResponse();
-                });
-            }
-            pageLink[pageLink.length-1].addEventListener("click" , function(){
-                pageNumber++;
-                container.innerHTML = "";
-                getResponse();
+            
+        }
+
+        let pageLink = document.getElementsByClassName('page-link');
+            for(var i = 0 ; i < pageLink.length; i++){
+                if(i == 0){
+                    pageLink[0].addEventListener("click" , function(e){
+                        nextPage = nextPageCount;
+                        container.innerHTML = "";
+                        getResponse();
+                        for(var j = 4 ; j < pageLink.length-1 ; j-- ){
+                            pageLink[j].textContent = nextPageCount;
+                            nextPageCount--;
+                        }
+                    });
+                }else if (i == pageLink.length-1){
+                    pageLink[i].addEventListener("click" , function(e){
+                        for(var j = 1 ; j < pageLink.length-1 ; j++ ){
+                            pageLink[j].textContent = nextPageCount;
+                            nextPageCount++;
+                            // if(nextPageCount == 9){
+                            //     pageLink[j+2].style.display = "none";
+                            // }
+                        }
+                    });
+                }else{
+                    pageLink[i].addEventListener("click" , function(e){
+                        nextPage = parseInt(e.target.textContent);
+                        container.innerHTML = "";
+                        getResponse();
+                    });
+                }
                 
-            });
         }
         getResponse();
         
